@@ -1,0 +1,17 @@
+deployments:
+- model:
+    format: OpenAI
+    name: gpt-4o-realtime-preview
+    version: '2024-10-01'
+  name: gpt-4o-realtime-preview
+  sku:
+    capacity: 1
+    name: GlobalStandard
+- model:
+    format: OpenAI
+    name: text-embedding-3-large
+    version: '1'
+  name: text-embedding-3-large
+  sku:
+    capacity: 100
+    name: Standard

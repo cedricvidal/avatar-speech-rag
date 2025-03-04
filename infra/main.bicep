@@ -222,32 +222,7 @@ module acaBackend 'core/host/container-app-upsert.bicep' = {
 }
 
 var embedModel = 'text-embedding-3-large'
-var openAiDeployments = [
-  {
-    name: 'gpt-4o-realtime-preview'
-    model: {
-      format: 'OpenAI'
-      name: 'gpt-4o-realtime-preview'
-      version: realtimeDeploymentVersion
-    }
-    sku: {
-      name: 'GlobalStandard'
-      capacity: realtimeDeploymentCapacity
-    }
-  }
-  {
-    name: embedModel
-    model: {
-      format: 'OpenAI'
-      name: embedModel
-      version: '1'
-    }
-    sku: {
-      name: 'Standard'
-      capacity: embeddingDeploymentCapacity
-    }
-  }
-]
+var openAiDeployments = loadYamlContent('./ai.yaml').deployments
 
 module openAi 'br/public:avm/res/cognitive-services/account:0.8.0' = if (!reuseExistingOpenAi) {
   name: 'openai'
