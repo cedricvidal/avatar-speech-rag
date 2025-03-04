@@ -77,7 +77,8 @@ class RTMiddleTier:
             self._token_provider = get_bearer_token_provider(credentials, "https://cognitiveservices.azure.com/.default")
             self._token_provider() # Warm up during startup so we have a token cached when the first request arrives
 
-    async def _process_message_to_client(self, msg: str, client_ws: web.WebSocketResponse, server_ws: web.WebSocketResponse) -> Optional[str]:
+    async def _process_message_to_client(self, msg: dict, client_ws: web.WebSocketResponse, server_ws: web.WebSocketResponse) -> Optional[str]:
+        logger.info("Processing message to client %s", msg.data[:100])
         message = json.loads(msg.data)
         updated_message = msg.data
         if message is not None:
@@ -155,7 +156,8 @@ class RTMiddleTier:
 
         return updated_message
 
-    async def _process_message_to_server(self, msg: str, ws: web.WebSocketResponse) -> Optional[str]:
+    async def _process_message_to_server(self, msg: dict, ws: web.WebSocketResponse) -> Optional[str]:
+        logger.info("Processing message to server %s", msg.data[:100])
         message = json.loads(msg.data)
         updated_message = msg.data
         if message is not None:
