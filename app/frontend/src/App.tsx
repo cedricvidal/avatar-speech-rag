@@ -3,8 +3,6 @@ import { Mic, MicOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
-import { GroundingFiles } from "@/components/ui/grounding-files";
-import GroundingFileView from "@/components/ui/grounding-file-view";
 import StatusMessage from "@/components/ui/status-message";
 
 import useRealTime from "@/hooks/useRealtime";
@@ -21,8 +19,6 @@ import { animateTool } from "@/tools/animate";
 
 function App() {
     const [isRecording, setIsRecording] = useState(false);
-    const [groundingFiles, setGroundingFiles] = useState<GroundingFile[]>([]);
-    const [selectedFile, setSelectedFile] = useState<GroundingFile | null>(null);
     const [activeAnimation, setActiveAnimation] = useState<string | undefined>(undefined);
 
     const { startSession, addUserAudio, inputAudioBufferClear } = useRealTime({
@@ -43,7 +39,7 @@ function App() {
                 return { id: x.chunk_id, name: x.title, content: x.chunk };
             });
 
-            setGroundingFiles(prev => [...prev, ...files]);
+            console.log("Received grounding files", files);
         },
         onReceivedAudioTranscriptionDone: message => {
             const { event_id, item_id, content_index, transcript } = message;
