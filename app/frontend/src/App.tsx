@@ -15,7 +15,7 @@ import { GroundingFile, ToolResult } from "./types";
 
 import logo from "./assets/logo.svg";
 
-import { RTAvatar } from "./Avatar";
+import { RTAvatar } from "./components/avatar/Avatar";
 import { weatherTool } from "@/tools/weather";
 import { hiTool } from "@/tools/hi";
 

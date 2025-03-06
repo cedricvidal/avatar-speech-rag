@@ -1,5 +1,5 @@
 import { makeTool } from "./tool";
-import { Avatar } from "@/Avatar";
+import { Avatar } from "@/components/avatar/Avatar";
 import { Tool } from "@/types";
 
 const schema = {

@@ -1,5 +1,5 @@
 import { Avatar } from "@readyplayerme/visage";
-import hi_animation from "./assets/Hi_animation.fbx";
+import hi_animation from "@/assets/Hi_animation.fbx";
 
 const modelSrc = "https://readyplayerme.github.io/visage/male.glb";
 
