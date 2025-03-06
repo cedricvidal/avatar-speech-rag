@@ -1,6 +1,6 @@
 {
     "app": {
-        "title": "Talk to your data",
+        "title": "Real-time avatar demo",
         "footer": "Built with Azure AI Search + Azure OpenAI",
         "stopRecording": "Stop recording",
         "startRecording": "Start recording",
