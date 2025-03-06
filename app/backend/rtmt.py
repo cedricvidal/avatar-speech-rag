@@ -151,12 +151,7 @@ class RTMiddleTier:
                             logger.warning(f"Tool {item['name']} not found server side, forwarding to client")
 
                 case "response.done":
-                    if len(self._tools_pending) == 0 and len(self._tools_completed) > 0:
-                        logger.info(f"All tool calls completed, sending response.create message")
-                        self._tools_completed.clear() # Any chance tool calls could be interleaved across different outstanding responses?
-                        await server_ws.send_json({
-                            "type": "response.create"
-                        })
+                    await self.check_tools_completed(server_ws)
                     if "response" in message:
                         replace = False
                         for i, output in enumerate(reversed(message["response"]["output"])):
@@ -168,7 +163,15 @@ class RTMiddleTier:
 
         return updated_message
 
-    async def _process_message_to_server(self, msg: dict, ws: web.WebSocketResponse) -> Optional[str]:
+    async def check_tools_completed(self, server_ws: web.WebSocketResponse):
+        if len(self._tools_pending) == 0 and len(self._tools_completed) > 0:
+            logger.info(f"All tool calls completed, sending response.create message")
+            self._tools_completed.clear() # Any chance tool calls could be interleaved across different outstanding responses?
+            await server_ws.send_json({
+                "type": "response.create"
+            })
+
+    async def _process_message_to_server(self, msg: dict, client_ws: web.WebSocketResponse, target_ws: web.WebSocketResponse) -> Optional[str]:
         logger.info("Processing message to server %s", msg.data[:100])
         message = json.loads(msg.data)
         updated_message = msg.data
@@ -200,24 +203,25 @@ class RTMiddleTier:
                             del self._tools_pending[item["call_id"]]
                             # add the tool call to the completed list
                             self._tools_completed[item["call_id"]] = tool_call
+                            await self.check_tools_completed(target_ws)
 
         return updated_message
 
-    async def _forward_messages(self, ws: web.WebSocketResponse):
+    async def _forward_messages(self, client_ws: web.WebSocketResponse):
         async with aiohttp.ClientSession(base_url=self.endpoint) as session:
             params = { "api-version": self.api_version, "deployment": self.deployment}
             headers = {}
-            if "x-ms-client-request-id" in ws.headers:
-                headers["x-ms-client-request-id"] = ws.headers["x-ms-client-request-id"]
+            if "x-ms-client-request-id" in client_ws.headers:
+                headers["x-ms-client-request-id"] = client_ws.headers["x-ms-client-request-id"]
             if self.key is not None:
                 headers = { "api-key": self.key }
             else:
                 headers = { "Authorization": f"Bearer {self._token_provider()}" } # NOTE: no async version of token provider, maybe refresh token on a timer?
             async with session.ws_connect("/openai/realtime", headers=headers, params=params) as target_ws:
                 async def from_client_to_server():
-                    async for msg in ws:
+                    async for msg in client_ws:
                         if msg.type == aiohttp.WSMsgType.TEXT:
-                            new_msg = await self._process_message_to_server(msg, ws)
+                            new_msg = await self._process_message_to_server(msg, client_ws, target_ws)
                             if new_msg is not None:
                                 await target_ws.send_str(new_msg)
                         else:
@@ -231,9 +235,9 @@ class RTMiddleTier:
                 async def from_server_to_client():
                     async for msg in target_ws:
                         if msg.type == aiohttp.WSMsgType.TEXT:
-                            new_msg = await self._process_message_to_client(msg, ws, target_ws)
+                            new_msg = await self._process_message_to_client(msg, client_ws, target_ws)
                             if new_msg is not None:
-                                await ws.send_str(new_msg)
+                                await client_ws.send_str(new_msg)
                         else:
                             print("Error: unexpected message type:", msg.type)
 
