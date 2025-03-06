@@ -63,6 +63,7 @@ class RTMiddleTier:
     voice_choice: Optional[str] = None
     api_version: str = "2024-10-01-preview"
     _tools_pending = {}
+    _tools_completed = {}
     _token_provider = None
 
     def __init__(self, endpoint: str, deployment: str, credentials: AzureKeyCredential | DefaultAzureCredential, voice_choice: Optional[str] = None):
@@ -102,6 +103,7 @@ class RTMiddleTier:
                     if "item" in message and message["item"]["type"] == "function_call":
                         item = message["item"]
                         if item["call_id"] not in self._tools_pending:
+                            logging.info(f"Tool call {item['call_id']} not found in pending tools, adding it")
                             self._tools_pending[item["call_id"]] = RTToolCall(item["call_id"], message["previous_item_id"])
                         updated_message = None
                     elif "item" in message and message["item"]["type"] == "function_call_output":
@@ -120,7 +122,7 @@ class RTMiddleTier:
                         if item["name"] in self.tools:
                             tool = self.tools[item["name"]]
                             args = item["arguments"]
-                            logger.info(f"Calling tool {item['name']} with args {args}")
+                            logger.info(f"Calling server side tool {item['name']} with args {args}")
                             result = await tool.target(json.loads(args))
                             await server_ws.send_json({
                                 "type": "conversation.item.create",
@@ -139,13 +141,19 @@ class RTMiddleTier:
                                     "tool_name": item["name"],
                                     "tool_result": result.to_text()
                                 })
+                            # Remove the tool call from the pending list
+                            del self._tools_pending[item["call_id"]]
+                            logger.info(f"Tool call {item['call_id']} completed, removing it from pending tools")
+                            # add the tool call to the completed list
+                            self._tools_completed[item["call_id"]] = tool_call
                             updated_message = None
                         else:
                             logger.warning(f"Tool {item['name']} not found server side, forwarding to client")
 
                 case "response.done":
-                    if len(self._tools_pending) > 0:
-                        self._tools_pending.clear() # Any chance tool calls could be interleaved across different outstanding responses?
+                    if len(self._tools_pending) == 0 and len(self._tools_completed) > 0:
+                        logger.info(f"All tool calls completed, sending response.create message")
+                        self._tools_completed.clear() # Any chance tool calls could be interleaved across different outstanding responses?
                         await server_ws.send_json({
                             "type": "response.create"
                         })
@@ -156,7 +164,7 @@ class RTMiddleTier:
                                 message["response"]["output"].pop(i)
                                 replace = True
                         if replace:
-                            updated_message = json.dumps(message)                        
+                            updated_message = json.dumps(message)
 
         return updated_message
 
@@ -182,6 +190,16 @@ class RTMiddleTier:
                     session["tools"] = (session["tools"] or []) + [tool.schema for tool in self.tools.values()]
                     updated_message = json.dumps(message)
                     logger.info(f"Session updated with tools {session['tools']}")
+
+                case "conversation.item.create":
+                    if "item" in message and message["item"]["type"] == "function_call_output":
+                        item = message["item"]
+                        if item["call_id"] in self._tools_pending:
+                            tool_call = self._tools_pending[item["call_id"]]
+                            logger.info(f"Client side tool call {item['call_id']} found in pending tools, result is {item['output']}")
+                            del self._tools_pending[item["call_id"]]
+                            # add the tool call to the completed list
+                            self._tools_completed[item["call_id"]] = tool_call
 
         return updated_message
 

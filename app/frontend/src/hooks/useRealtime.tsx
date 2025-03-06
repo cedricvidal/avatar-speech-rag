@@ -68,7 +68,7 @@ export default function useRealTime({
         onOpen: () => onWebSocketOpen?.(),
         onClose: () => onWebSocketClose?.(),
         onError: event => onWebSocketError?.(event),
-        onMessage: event => onMessageReceived(event),
+        onMessage: async event => await onMessageReceived(event),
         shouldReconnect: () => true
     });
 
@@ -109,7 +109,7 @@ export default function useRealTime({
         sendJsonMessage(command);
     };
 
-    const onMessageReceived = (event: MessageEvent<any>) => {
+    const onMessageReceived = async (event: MessageEvent<any>) => {
         onWebSocketMessage?.(event);
 
         let message: Message;
@@ -150,7 +150,7 @@ export default function useRealTime({
                     if (tool) {
                         console.log("Tool found", { tool });
                         const args = JSON.parse(item.arguments);
-                        const result = tool.target(args);
+                        const result = await tool.target(args);
                         const command: ConversationItemCreate = {
                             type: "conversation.item.create",
                             item: {
