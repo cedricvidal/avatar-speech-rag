@@ -15,6 +15,8 @@ import { GroundingFile, ToolResult } from "./types";
 
 import logo from "./assets/logo.svg";
 
+import { RTAvatar } from "./Avatar";
+
 function App() {
     const [isRecording, setIsRecording] = useState(false);
     const [groundingFiles, setGroundingFiles] = useState<GroundingFile[]>([]);
@@ -72,6 +74,7 @@ function App() {
                 <h1 className="mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-7xl">
                     {t("app.title")}
                 </h1>
+                <RTAvatar />
                 <div className="mb-4 flex flex-col items-center justify-center">
                     <Button
                         onClick={onToggleListening}

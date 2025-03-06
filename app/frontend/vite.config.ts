@@ -1,10 +1,23 @@
 import path from "path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react()],
+    plugins: [
+        react(),
+        nodePolyfills({
+            // To add only specific polyfills, add them here. If no option is passed, adds all polyfills
+            include: ["util"],
+            // Whether to polyfill specific globals.
+            globals: {
+                Buffer: false, // can also be 'build', 'dev', or false
+                global: false,
+                process: true
+            }
+        })
+    ],
     build: {
         outDir: "../backend/static",
         emptyOutDir: true,
