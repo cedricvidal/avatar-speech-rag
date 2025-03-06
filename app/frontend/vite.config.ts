@@ -38,5 +38,5 @@ export default defineConfig({
             }
         }
     },
-    assetsInclude: ["src/assets/**/*.fbx"]
+    assetsInclude: ["src/assets/**/*"]
 });
