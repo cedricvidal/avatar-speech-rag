@@ -102,3 +102,13 @@ export type ExtensionMiddleTierToolResponse = {
 export type ToolResult = {
     sources: { chunk_id: string; title: string; chunk: string }[];
 };
+
+// type for conversation.item.create
+export type ConversationItemCreate = {
+    type: "conversation.item.create";
+    item: {
+        type: string;
+        call_id: string;
+        output: string;
+    };
+};

@@ -161,7 +161,7 @@ class RTMiddleTier:
         return updated_message
 
     async def _process_message_to_server(self, msg: dict, ws: web.WebSocketResponse) -> Optional[str]:
-        logger.debug("Processing message to server %s", msg.data[:100])
+        logger.info("Processing message to server %s", msg.data[:100])
         message = json.loads(msg.data)
         updated_message = msg.data
         if message is not None:

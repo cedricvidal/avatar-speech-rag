@@ -12,6 +12,7 @@ import {
     ResponseInputAudioTranscriptionCompleted,
     ResponseAudioTranscriptionDone,
     ResponseOutputItemDone,
+    ConversationItemCreate,
     Tool
 } from "@/types";
 
@@ -150,7 +151,7 @@ export default function useRealTime({
                         console.log("Tool found", { tool });
                         const args = JSON.parse(item.arguments);
                         const result = tool.target(args);
-                        const reply = {
+                        const command: ConversationItemCreate = {
                             type: "conversation.item.create",
                             item: {
                                 type: "function_call_output",
@@ -158,8 +159,8 @@ export default function useRealTime({
                                 output: JSON.stringify(result)
                             }
                         };
-                        console.log("Tool result", { reply });
-                        sendJsonMessage(reply);
+                        console.log("Tool result", { reply: command });
+                        sendJsonMessage(command);
                     }
                 }
                 console.log("Output item done", { event_id, item });
