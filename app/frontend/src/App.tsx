@@ -18,11 +18,13 @@ import logo from "./assets/logo.svg";
 import { RTAvatar } from "./Avatar";
 import { weatherTool } from "@/tools/weather";
 import { hiTool } from "@/tools/hi";
+import hi_animation from "./assets/Hi_animation.fbx";
 
 function App() {
     const [isRecording, setIsRecording] = useState(false);
     const [groundingFiles, setGroundingFiles] = useState<GroundingFile[]>([]);
     const [selectedFile, setSelectedFile] = useState<GroundingFile | null>(null);
+    const [animationSrc, setAnimationSrc] = useState(undefined);
 
     const { startSession, addUserAudio, inputAudioBufferClear } = useRealTime({
         onWebSocketOpen: () => console.log("WebSocket connection opened"),
@@ -48,7 +50,12 @@ function App() {
             const { event_id, item_id, content_index, transcript } = message;
             console.log("Transcription done", { event_id, item_id, content_index, transcript });
         },
-        tools: [weatherTool, hiTool]
+        tools: [
+            weatherTool,
+            hiTool(() => {
+                setAnimationSrc(hi_animation);
+            })
+        ]
     });
 
     const { reset: resetAudioPlayer, play: playAudio, stop: stopAudioPlayer } = useAudioPlayer();
@@ -81,7 +88,7 @@ function App() {
                 <h1 className="mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-7xl">
                     {t("app.title")}
                 </h1>
-                <RTAvatar />
+                <RTAvatar animationSrc={animationSrc} />
                 <div className="mb-4 flex flex-col items-center justify-center">
                     <Button
                         onClick={onToggleListening}

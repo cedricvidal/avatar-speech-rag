@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { Avatar } from "@readyplayerme/visage";
-import hi_animation from "./assets/Hi_animation.fbx";
 
 const modelSrc = "https://readyplayerme.github.io/visage/male.glb";
 
-export function RTAvatar() {
-    return <Avatar modelSrc={modelSrc} animationSrc={hi_animation} />;
+export function RTAvatar(props: { animationSrc?: string }) {
+    const { animationSrc } = props;
+    return <Avatar modelSrc={modelSrc} animationSrc={animationSrc} />;
 }

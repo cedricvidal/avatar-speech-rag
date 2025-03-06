@@ -1,4 +1,6 @@
 import { makeTool } from "./tool";
+import { Avatar } from "@/Avatar";
+import { Tool } from "@/types";
 
 const schema = {
     type: "function",
@@ -11,9 +13,10 @@ const schema = {
     }
 };
 
-async function implementation(location: string): Promise<object> {
-    console.log("hi animation");
-    return {};
+export function hiTool(handler: () => void): Tool {
+    return makeTool(schema, async () => {
+        console.log("hi animation");
+        handler();
+        return {};
+    });
 }
-
-export const hiTool = makeTool(schema, implementation);
