@@ -17,6 +17,7 @@ import logo from "./assets/logo.svg";
 
 import { RTAvatar } from "./Avatar";
 import { weatherTool } from "@/tools/weather";
+import { hiTool } from "@/tools/hi";
 
 function App() {
     const [isRecording, setIsRecording] = useState(false);
@@ -47,7 +48,7 @@ function App() {
             const { event_id, item_id, content_index, transcript } = message;
             console.log("Transcription done", { event_id, item_id, content_index, transcript });
         },
-        tools: [weatherTool]
+        tools: [weatherTool, hiTool]
     });
 
     const { reset: resetAudioPlayer, play: playAudio, stop: stopAudioPlayer } = useAudioPlayer();
