@@ -84,7 +84,7 @@ function App() {
                 <h1 className="mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-7xl">
                     {t("app.title")}
                 </h1>
-                <AvatarCanvas activeAnimation={activeAnimation} />
+                <AvatarCanvas animation={activeAnimation} isListening={isRecording} onToggleListening={onToggleListening} />
                 <div className="mb-4 flex flex-col items-center justify-center">
                     <Button
                         onClick={onToggleListening}
