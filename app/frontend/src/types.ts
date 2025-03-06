@@ -53,6 +53,14 @@ export type ResponseInputAudioTranscriptionCompleted = {
     transcript: string;
 };
 
+export type ResponseAudioTranscriptionDone = {
+    type: "response.audio_transcript.done";
+    event_id: string;
+    item_id: string;
+    content_index: number;
+    transcript: string;
+};
+
 export type ResponseDone = {
     type: "response.done";
     event_id: string;

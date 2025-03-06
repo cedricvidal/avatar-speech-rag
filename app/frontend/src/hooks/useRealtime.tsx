@@ -9,7 +9,8 @@ import {
     ResponseDone,
     SessionUpdateCommand,
     ExtensionMiddleTierToolResponse,
-    ResponseInputAudioTranscriptionCompleted
+    ResponseInputAudioTranscriptionCompleted,
+    ResponseAudioTranscriptionDone
 } from "@/types";
 
 type Parameters = {
@@ -30,6 +31,7 @@ type Parameters = {
     onReceivedExtensionMiddleTierToolResponse?: (message: ExtensionMiddleTierToolResponse) => void;
     onReceivedResponseAudioTranscriptDelta?: (message: ResponseAudioTranscriptDelta) => void;
     onReceivedInputAudioTranscriptionCompleted?: (message: ResponseInputAudioTranscriptionCompleted) => void;
+    onReceivedAudioTranscriptionDone?: (message: ResponseAudioTranscriptionDone) => void;
     onReceivedError?: (message: Message) => void;
 };
 
@@ -49,6 +51,7 @@ export default function useRealTime({
     onReceivedInputAudioBufferSpeechStarted,
     onReceivedExtensionMiddleTierToolResponse,
     onReceivedInputAudioTranscriptionCompleted,
+    onReceivedAudioTranscriptionDone,
     onReceivedError
 }: Parameters) {
     const wsEndpoint = useDirectAoaiApi
@@ -125,6 +128,9 @@ export default function useRealTime({
                 break;
             case "conversation.item.input_audio_transcription.completed":
                 onReceivedInputAudioTranscriptionCompleted?.(message as ResponseInputAudioTranscriptionCompleted);
+                break;
+            case "response.audio_transcript.done":
+                onReceivedAudioTranscriptionDone?.(message as ResponseInputAudioTranscriptionCompleted);
                 break;
             case "extension.middle_tier_tool_response":
                 onReceivedExtensionMiddleTierToolResponse?.(message as ExtensionMiddleTierToolResponse);

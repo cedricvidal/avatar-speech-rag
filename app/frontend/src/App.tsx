@@ -41,6 +41,10 @@ function App() {
             });
 
             setGroundingFiles(prev => [...prev, ...files]);
+        },
+        onReceivedAudioTranscriptionDone: message => {
+            const { event_id, item_id, content_index, transcript } = message;
+            console.log("Transcription done", { event_id, item_id, content_index, transcript });
         }
     });
 
