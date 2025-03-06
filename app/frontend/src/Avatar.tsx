@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Avatar } from "@readyplayerme/visage";
 import hi_animation from "./assets/Hi_animation.fbx";
 
