@@ -11,6 +11,7 @@ import {
     ExtensionMiddleTierToolResponse,
     ResponseInputAudioTranscriptionCompleted,
     ResponseAudioTranscriptionDone,
+    ResponseOutputItemDone,
     Tool
 } from "@/types";
 
@@ -139,6 +140,29 @@ export default function useRealTime({
                 break;
             case "extension.middle_tier_tool_response":
                 onReceivedExtensionMiddleTierToolResponse?.(message as ExtensionMiddleTierToolResponse);
+                break;
+            case "response.output_item.done":
+                const { event_id, item } = message as ResponseOutputItemDone;
+                // If message type is function_call then call the tool and send it back to the server
+                if (item.type === "function_call") {
+                    const tool = tools?.find(tool => tool.schema.name === item.name);
+                    if (tool) {
+                        console.log("Tool found", { tool });
+                        const args = JSON.parse(item.arguments);
+                        const result = tool.target(args);
+                        const reply = {
+                            type: "conversation.item.create",
+                            item: {
+                                type: "function_call_output",
+                                call_id: item.call_id,
+                                output: JSON.stringify(result)
+                            }
+                        };
+                        console.log("Tool result", { reply });
+                        sendJsonMessage(reply);
+                    }
+                }
+                console.log("Output item done", { event_id, item });
                 break;
             case "error":
                 onReceivedError?.(message);

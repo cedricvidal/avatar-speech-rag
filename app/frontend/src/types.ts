@@ -76,6 +76,22 @@ export type ResponseDone = {
     };
 };
 
+export type ResponseOutputItemDone = {
+    type: "response.output_item.done";
+    event_id: string;
+    response_id: string;
+    output_index: number;
+    item: {
+        id: string;
+        object: string;
+        type: string;
+        status: string;
+        name: string;
+        call_id: string;
+        arguments: string;
+    };
+};
+
 export type ExtensionMiddleTierToolResponse = {
     type: "extension.middle_tier_tool.response";
     previous_item_id: string;
