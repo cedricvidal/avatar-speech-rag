@@ -1,3 +1,8 @@
+export type Tool = {
+    schema: any;
+    target: (input: any) => Promise<any>;
+};
+
 export type GroundingFile = {
     id: string;
     name: string;
@@ -19,6 +24,7 @@ export type SessionUpdateCommand = {
         input_audio_transcription?: {
             model: "whisper-1";
         };
+        tools?: Tool[];
     };
 };
 

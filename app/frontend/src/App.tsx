@@ -16,6 +16,7 @@ import { GroundingFile, ToolResult } from "./types";
 import logo from "./assets/logo.svg";
 
 import { RTAvatar } from "./Avatar";
+import { weatherTool } from "@/tools/weather";
 
 function App() {
     const [isRecording, setIsRecording] = useState(false);
@@ -45,7 +46,8 @@ function App() {
         onReceivedAudioTranscriptionDone: message => {
             const { event_id, item_id, content_index, transcript } = message;
             console.log("Transcription done", { event_id, item_id, content_index, transcript });
-        }
+        },
+        tools: [weatherTool]
     });
 
     const { reset: resetAudioPlayer, play: playAudio, stop: stopAudioPlayer } = useAudioPlayer();

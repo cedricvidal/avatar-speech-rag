@@ -10,7 +10,8 @@ import {
     SessionUpdateCommand,
     ExtensionMiddleTierToolResponse,
     ResponseInputAudioTranscriptionCompleted,
-    ResponseAudioTranscriptionDone
+    ResponseAudioTranscriptionDone,
+    Tool
 } from "@/types";
 
 type Parameters = {
@@ -33,6 +34,8 @@ type Parameters = {
     onReceivedInputAudioTranscriptionCompleted?: (message: ResponseInputAudioTranscriptionCompleted) => void;
     onReceivedAudioTranscriptionDone?: (message: ResponseAudioTranscriptionDone) => void;
     onReceivedError?: (message: Message) => void;
+
+    tools?: Tool[];
 };
 
 export default function useRealTime({
@@ -52,7 +55,8 @@ export default function useRealTime({
     onReceivedExtensionMiddleTierToolResponse,
     onReceivedInputAudioTranscriptionCompleted,
     onReceivedAudioTranscriptionDone,
-    onReceivedError
+    onReceivedError,
+    tools
 }: Parameters) {
     const wsEndpoint = useDirectAoaiApi
         ? `${aoaiEndpointOverride}/openai/realtime?api-key=${aoaiApiKeyOverride}&deployment=${aoaiModelOverride}&api-version=2024-10-01-preview`
@@ -72,7 +76,8 @@ export default function useRealTime({
             session: {
                 turn_detection: {
                     type: "server_vad"
-                }
+                },
+                tools: tools?.map(tool => tool.schema)
             }
         };
 
@@ -137,6 +142,9 @@ export default function useRealTime({
                 break;
             case "error":
                 onReceivedError?.(message);
+                break;
+            default:
+                console.warn("Unknown message type:", message);
                 break;
         }
     };

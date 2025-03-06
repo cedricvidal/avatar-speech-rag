@@ -117,27 +117,31 @@ class RTMiddleTier:
                     if "item" in message and message["item"]["type"] == "function_call":
                         item = message["item"]
                         tool_call = self._tools_pending[message["item"]["call_id"]]
-                        tool = self.tools[item["name"]]
-                        args = item["arguments"]
-                        result = await tool.target(json.loads(args))
-                        await server_ws.send_json({
-                            "type": "conversation.item.create",
-                            "item": {
-                                "type": "function_call_output",
-                                "call_id": item["call_id"],
-                                "output": result.to_text() if result.destination == ToolResultDirection.TO_SERVER else ""
-                            }
-                        })
-                        if result.destination == ToolResultDirection.TO_CLIENT:
-                            # TODO: this will break clients that don't know about this extra message, rewrite 
-                            # this to be a regular text message with a special marker of some sort
-                            await client_ws.send_json({
-                                "type": "extension.middle_tier_tool_response",
-                                "previous_item_id": tool_call.previous_id,
-                                "tool_name": item["name"],
-                                "tool_result": result.to_text()
+                        if item["name"] in self.tools:
+                            tool = self.tools[item["name"]]
+                            args = item["arguments"]
+                            logger.info(f"Calling tool {item['name']} with args {args}")
+                            result = await tool.target(json.loads(args))
+                            await server_ws.send_json({
+                                "type": "conversation.item.create",
+                                "item": {
+                                    "type": "function_call_output",
+                                    "call_id": item["call_id"],
+                                    "output": result.to_text() if result.destination == ToolResultDirection.TO_SERVER else ""
+                                }
                             })
-                        updated_message = None
+                            if result.destination == ToolResultDirection.TO_CLIENT:
+                                # TODO: this will break clients that don't know about this extra message, rewrite 
+                                # this to be a regular text message with a special marker of some sort
+                                await client_ws.send_json({
+                                    "type": "extension.middle_tier_tool_response",
+                                    "previous_item_id": tool_call.previous_id,
+                                    "tool_name": item["name"],
+                                    "tool_result": result.to_text()
+                                })
+                            updated_message = None
+                        else:
+                            logger.warning(f"Tool {item['name']} not found server side, forwarding to client")
 
                 case "response.done":
                     if len(self._tools_pending) > 0:
@@ -157,7 +161,7 @@ class RTMiddleTier:
         return updated_message
 
     async def _process_message_to_server(self, msg: dict, ws: web.WebSocketResponse) -> Optional[str]:
-        logger.info("Processing message to server %s", msg.data[:100])
+        logger.debug("Processing message to server %s", msg.data[:100])
         message = json.loads(msg.data)
         updated_message = msg.data
         if message is not None:
@@ -175,8 +179,9 @@ class RTMiddleTier:
                     if self.voice_choice is not None:
                         session["voice"] = self.voice_choice
                     session["tool_choice"] = "auto" if len(self.tools) > 0 else "none"
-                    session["tools"] = [tool.schema for tool in self.tools.values()]
+                    session["tools"] = (session["tools"] or []) + [tool.schema for tool in self.tools.values()]
                     updated_message = json.dumps(message)
+                    logger.info(f"Session updated with tools {session['tools']}")
 
         return updated_message
 
