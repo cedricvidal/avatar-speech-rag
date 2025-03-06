@@ -37,5 +37,6 @@ export default defineConfig({
                 rewriteWsOrigin: true
             }
         }
-    }
+    },
+    assetsInclude: ["src/assets/**/*.fbx"]
 });
