@@ -16,6 +16,7 @@ import logo from "./assets/logo.svg";
 import { AvatarCanvas } from "./components/avatar/Avatar";
 import { weatherTool } from "@/tools/weather";
 import { animateTool } from "@/tools/animate";
+import { stopAnimate } from "./tools/stopAnimate";
 
 function App() {
     const [isRecording, setIsRecording] = useState(false);
@@ -50,6 +51,10 @@ function App() {
             animateTool(animation => {
                 console.log("Set active animation", animation);
                 setActiveAnimation(animation);
+            }),
+            stopAnimate(() => {
+                console.log("Stop animation");
+                setActiveAnimation(undefined);
             })
         ]
     });
