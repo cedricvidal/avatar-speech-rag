@@ -82,11 +82,11 @@ function App() {
 
     return (
         <div className="App">
-            <main className="h-screen w-full">
+            <main className="h-screen w-full bg-black">
                 <AvatarCanvas animation={activeAnimation} isListening={isRecording} onToggleListening={onToggleListening} />
             </main>
 
-            <footer className="py-4 text-center">
+            <footer className="py-4 text-center text-white">
                 <p>{t("app.footer")}</p>
             </footer>
         </div>

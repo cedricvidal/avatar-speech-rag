@@ -1,4 +1,4 @@
-import { Html, OrbitControls, Preload, useAnimations, useGLTF, useFBX } from "@react-three/drei";
+import { Html, OrbitControls, Preload, useAnimations, useGLTF, useFBX, Environment, SpotLight } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { act, Suspense, useEffect, useRef, useState } from "react";
 import { MyLoader } from "./MyLoader";
@@ -67,12 +67,14 @@ const Avatar = ({ animation, onToggleListening, isListening }: Props) => {
 export const AvatarCanvas = (props: Props) => {
     return (
         <Canvas dpr={[0, 2]}>
+            <SpotLight position={[0, 3, 3]} angle={0.5} opacity={0.5} />
             <ambientLight intensity={0.5} />
             <pointLight position={[1, 1, 1]} />
             <OrbitControls enabled={true} />
             <Suspense fallback={<MyLoader />}>
                 <Avatar {...props} />
             </Suspense>
+            <Environment preset="city" />
             <Preload all />
         </Canvas>
     );
