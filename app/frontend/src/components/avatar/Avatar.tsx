@@ -2,7 +2,7 @@ import { Html, OrbitControls, Preload, useAnimations, useGLTF, useFBX } from "@r
 import { Canvas, useFrame } from "@react-three/fiber";
 import { act, Suspense, useEffect, useRef, useState } from "react";
 import { MyLoader } from "./MyLoader";
-import myavatar_url from "@/assets/myavatar.glb";
+import myavatar_url from "@/assets/cedric-yellow-pullover-animated.glb";
 import { Mic, MicOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import StatusMessage from "@/components/ui/status-message";

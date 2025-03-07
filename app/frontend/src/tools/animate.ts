@@ -12,7 +12,7 @@ const schema = {
             name: {
                 type: "string",
                 description: "Name of the animation to play",
-                enum: ["salute", "point", "dance"]
+                enum: ["clap", "point", "dance", "happy", "sad", "idle", "point-left", "point-right", "wave"]
             }
         },
         required: ["location"],
