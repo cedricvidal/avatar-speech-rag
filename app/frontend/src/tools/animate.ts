@@ -24,6 +24,8 @@ export function animateTool(handler: (animation: string) => void): Tool {
     return makeTool(schema, async ({ name: animation }) => {
         console.log("Animation tool called", animation);
         handler(animation);
-        return {};
+        return {
+            result: "Here was my " + animation + " move, what do you think abou it?"
+        };
     });
 }
