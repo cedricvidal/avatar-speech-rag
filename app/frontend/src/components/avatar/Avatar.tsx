@@ -50,11 +50,11 @@ const Avatar = ({ animation, onToggleListening, isListening }: Props) => {
                 >
                     {isListening ? (
                         <>
-                            <MicOff className="mr-2 h-6 w-6" />
+                            <MicOff className="mr-2 h-6 w-6 text-white" />
                         </>
                     ) : (
                         <>
-                            <Mic className="mr-2 h-6 w-6" />
+                            <Mic className="mr-2 h-6 w-6 text-white" />
                         </>
                     )}
                 </button>
