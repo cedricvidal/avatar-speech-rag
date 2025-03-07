@@ -182,7 +182,7 @@ def upload_documents(azure_credential, indexer_name, azure_search_endpoint, azur
     existing_blobs = [blob.name for blob in container_client.list_blobs()]
 
     # Open each file in /data folder
-    for file in os.scandir("data"):
+    for file in os.scandir("data/ameca"):
         with open(file.path, "rb") as opened_file:
             filename = os.path.basename(file.path)
             # Check if blob already exists
