@@ -1,17 +1,11 @@
 import { useState } from "react";
-import { Mic, MicOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-import { Button } from "@/components/ui/button";
-import StatusMessage from "@/components/ui/status-message";
 
 import useRealTime from "@/hooks/useRealtime";
 import useAudioRecorder from "@/hooks/useAudioRecorder";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
 
 import { GroundingFile, ToolResult } from "./types";
-
-import logo from "./assets/logo.svg";
 
 import { AvatarCanvas } from "./components/avatar/Avatar";
 import { weatherTool } from "@/tools/weather";
