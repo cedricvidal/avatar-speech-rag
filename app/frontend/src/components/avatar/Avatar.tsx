@@ -18,9 +18,17 @@ const Avatar = ({ animation }: Props) => {
     const avatarMesh = useRef();
     const [isAnimating, setIsAnimating] = useState(false);
 
-    useFrame(({ clock }, delta) => {
-        //avatarMesh.current.rotation.y = clock.elapsedTime;
-        //easing.damp3(avatarMesh.current.position, [0, 0, 0], 0.25, delta);
+    // Define target scale and position based on focus state
+    const focusOnHead = !isAnimating;
+    const targetScale = focusOnHead ? 8 : 2.5;
+    const targetPositionY = focusOnHead ? -12 : -2;
+
+    useFrame((state, delta) => {
+        // Apply smooth easing to scale and position
+        if (avatarMesh.current) {
+            easing.damp3(avatarMesh.current.scale, [targetScale, targetScale, targetScale], 0.25, delta);
+            easing.damp(avatarMesh.current.position, "y", targetPositionY, 0.25, delta);
+        }
     });
 
     useEffect(() => {
@@ -56,11 +64,6 @@ const Avatar = ({ animation }: Props) => {
         };
     }, [actions, names, animation, mixer]);
 
-    const focusOnHead = !isAnimating;
-    // Adjust position and scale based on focus area
-    const scale = focusOnHead ? 8 : 2.5;
-    const positionY = focusOnHead ? -12 : -2;
-
     // If there's no active animation or animation is finished, print "finished"
     useEffect(() => {
         if (!isAnimating && !animation) {
@@ -70,7 +73,7 @@ const Avatar = ({ animation }: Props) => {
 
     return (
         <group>
-            <primitive ref={avatarMesh} object={scene} scale={scale} position-y={positionY} rotation-y={0.5} position-x={[0]} />
+            <primitive ref={avatarMesh} object={scene} rotation-y={0.5} position-x={0} />
         </group>
     );
 };
