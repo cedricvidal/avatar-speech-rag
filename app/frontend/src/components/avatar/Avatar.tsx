@@ -6,7 +6,7 @@ import myavatar_url from "@/assets/cedric-yellow-pullover-animated.glb";
 import { Mic, MicOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import StatusMessage from "@/components/ui/status-message";
-import { LoopOnce } from "three";
+import { LoopOnce, LoopRepeat } from "three";
 
 type Props = {
     animation?: string;
@@ -20,11 +20,13 @@ const Avatar = ({ animation, onToggleListening, isListening }: Props) => {
 
     useEffect(() => {
         console.log("names", names);
+
         if (animation) {
             console.log("animation changed", animation);
             actions[animation]?.reset().fadeIn(0.5).setLoop(LoopOnce, 1).play();
-            console.log("animation done", animation);
         }
+        console.log("idle animation");
+        actions["idle"]?.reset().fadeIn(0.5).setLoop(LoopRepeat, 10).play();
 
         return () => {
             if (animation) {
