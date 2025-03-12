@@ -9,7 +9,7 @@ import { GroundingFile, ToolResult } from "./types";
 
 import { AvatarCanvas } from "./components/avatar/Avatar";
 import { weatherTool } from "@/tools/weather";
-import { animateTool } from "@/tools/animate";
+import { moveTool } from "@/tools/move";
 import { stopAnimate } from "./tools/stopAnimate";
 
 import StatusMessage from "@/components/ui/status-message";
@@ -45,7 +45,7 @@ function App() {
         },
         tools: [
             weatherTool,
-            animateTool(animation => {
+            moveTool(animation => {
                 console.log("Set active animation", animation);
                 setActiveAnimation(animation);
             }),
