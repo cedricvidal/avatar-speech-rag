@@ -5,6 +5,8 @@
 
 This repo contains an example of how to implement RAG support in applications that use voice as their user interface, powered by the GPT-4o realtime API for audio, and featuring an interactive 3D avatar assistant. This project is based on the upstream [VoiceRAG project](https://github.com/Azure-Samples/aisearch-openai-rag-audio) with added 3D avatar capabilities. We describe the pattern in more detail in [this blog post](https://aka.ms/voicerag), and you can see this sample app in action in [this short video](https://youtu.be/vXJka8xZ9Ko).
 
+![](./docs/avatar.png)
+
 * [Features](#features)
 * [Architecture Diagram](#architecture-diagram)
 * [Getting Started](#getting-started)
