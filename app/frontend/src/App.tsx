@@ -12,8 +12,8 @@ import { weatherTool } from "@/tools/weather";
 import { animateTool } from "@/tools/animate";
 import { stopAnimate } from "./tools/stopAnimate";
 
-import { Mic, MicOff } from "lucide-react";
 import StatusMessage from "@/components/ui/status-message";
+import RecordingButton from "@/components/ui/recording-button";
 
 function App() {
     const [isRecording, setIsRecording] = useState(false);
@@ -84,20 +84,7 @@ function App() {
                 <AvatarCanvas animation={activeAnimation} />
             </main>
             <div>
-                <button
-                    className="bg-theme w-[100px] rounded-lg p-2 text-xs text-black duration-500 hover:scale-110 hover:bg-white sm:w-[200px] sm:text-lg"
-                    onClick={onToggleListening}
-                >
-                    {isRecording ? (
-                        <>
-                            <MicOff className="mr-2 h-6 w-6 text-white" />
-                        </>
-                    ) : (
-                        <>
-                            <Mic className="mr-2 h-6 w-6 text-white" />
-                        </>
-                    )}
-                </button>
+                <RecordingButton isRecording={isRecording} onToggleListening={onToggleListening} />
                 <StatusMessage isRecording={isRecording} />
             </div>
 
