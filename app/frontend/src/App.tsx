@@ -14,10 +14,12 @@ import { stopAnimate } from "./tools/stopAnimate";
 
 import StatusMessage from "@/components/ui/status-message";
 import RecordingButton from "@/components/ui/recording-button";
+import { showQrCode } from "./tools/showQrcode";
 
 function App() {
     const [isRecording, setIsRecording] = useState(false);
     const [activeAnimation, setActiveAnimation] = useState<string | undefined>(undefined);
+    const [showQrCodeOverlay, setShowQrCodeOverlay] = useState(false);
 
     const { startSession, addUserAudio, inputAudioBufferClear, sendJsonMessage } = useRealTime({
         onWebSocketOpen: () => console.log("WebSocket connection opened"),
@@ -52,6 +54,10 @@ function App() {
             stopAnimate(() => {
                 console.log("Stop animation");
                 setActiveAnimation(undefined);
+            }),
+            showQrCode(() => {
+                console.log("Show QR code");
+                setShowQrCodeOverlay(true);
             })
         ]
     });
@@ -109,6 +115,16 @@ function App() {
                     <StatusMessage isRecording={isRecording} />
                 </div>
             </div>
+
+            {/* QR Code overlay */}
+            {showQrCodeOverlay && (
+                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black bg-opacity-70" onClick={() => setShowQrCodeOverlay(false)}>
+                    <div className="rounded-lg bg-white p-6">
+                        <img src="github-qrcode.png" alt="GitHub QR Code" className="h-64 w-64" />
+                        <p className="mt-2 text-center text-sm text-gray-600">Tap anywhere to dismiss</p>
+                    </div>
+                </div>
+            )}
 
             <main className="h-screen w-full bg-black">
                 <AvatarCanvas animation={activeAnimation} onAnimationComplete={onAnimationComplete} />
