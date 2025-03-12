@@ -55,6 +55,8 @@ async def create_app():
         If asked a question, be helpful and answer it, but only if you find the answer in the knowledge base.
 
         After answering a question, if there's no more questions to answer, followup with a question to the user, such as "How are you?" or "What do you want to talk about?".
+
+        After greeting, if you don't get asked a question, try to find out who you're talking to.
         
         The user is listening to answers with audio, so it's *super* important that answers are as short as possible, a single sentence if at all possible. 
         Never read file names or source names or keys out loud. 

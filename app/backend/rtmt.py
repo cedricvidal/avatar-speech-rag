@@ -89,8 +89,8 @@ class RTMiddleTier:
             self._token_provider() # Warm up during startup so we have a token cached when the first request arrives
 
     async def _process_message_to_client(self, msg: dict, client_ws: web.WebSocketResponse, server_ws: web.WebSocketResponse) -> Optional[str]:
-        logger.info("Processing message to client %s", msg.data[:100])
         message = json.loads(msg.data)
+        logger.info(f"Processing message to client '{message["type"]}' {msg.data[:100]}")
         updated_message = msg.data
         if message is not None:
             match message["type"]:
@@ -182,8 +182,8 @@ class RTMiddleTier:
             })
 
     async def _process_message_to_server(self, msg: dict, client_ws: web.WebSocketResponse, target_ws: web.WebSocketResponse) -> Optional[str]:
-        logger.info("Processing message to server %s", msg.data[:100])
         message = json.loads(msg.data)
+        logger.info(f"Processing message to server '{message["type"]}' {msg.data[:100]}")
         updated_message = msg.data
         if message is not None:
             match message["type"]:
