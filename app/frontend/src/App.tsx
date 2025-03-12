@@ -1,11 +1,5 @@
 import { useState } from "react";
-import { Mic, MicOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-import { Button } from "@/components/ui/button";
-import { GroundingFiles } from "@/components/ui/grounding-files";
-import GroundingFileView from "@/components/ui/grounding-file-view";
-import StatusMessage from "@/components/ui/status-message";
 
 import useRealTime from "@/hooks/useRealtime";
 import useAudioRecorder from "@/hooks/useAudioRecorder";
@@ -13,12 +7,17 @@ import useAudioPlayer from "@/hooks/useAudioPlayer";
 
 import { GroundingFile, ToolResult } from "./types";
 
-import logo from "./assets/logo.svg";
+import { AvatarCanvas } from "./components/avatar/Avatar";
+import { weatherTool } from "@/tools/weather";
+import { moveTool } from "@/tools/move";
+import { stopAnimate } from "./tools/stopAnimate";
+
+import StatusMessage from "@/components/ui/status-message";
+import RecordingButton from "@/components/ui/recording-button";
 
 function App() {
     const [isRecording, setIsRecording] = useState(false);
-    const [groundingFiles, setGroundingFiles] = useState<GroundingFile[]>([]);
-    const [selectedFile, setSelectedFile] = useState<GroundingFile | null>(null);
+    const [activeAnimation, setActiveAnimation] = useState<string | undefined>(undefined);
 
     const { startSession, addUserAudio, inputAudioBufferClear } = useRealTime({
         onWebSocketOpen: () => console.log("WebSocket connection opened"),
@@ -38,8 +37,23 @@ function App() {
                 return { id: x.chunk_id, name: x.title, content: x.chunk };
             });
 
-            setGroundingFiles(prev => [...prev, ...files]);
-        }
+            console.log("Received grounding files", files);
+        },
+        onReceivedAudioTranscriptionDone: message => {
+            const { event_id, item_id, content_index, transcript } = message;
+            console.log("Transcription done", { event_id, item_id, content_index, transcript });
+        },
+        tools: [
+            weatherTool,
+            moveTool(animation => {
+                console.log("Set active animation", animation);
+                setActiveAnimation(animation);
+            }),
+            stopAnimate(() => {
+                console.log("Stop animation");
+                setActiveAnimation(undefined);
+            })
+        ]
     });
 
     const { reset: resetAudioPlayer, play: playAudio, stop: stopAudioPlayer } = useAudioPlayer();
@@ -64,41 +78,29 @@ function App() {
     const { t } = useTranslation();
 
     return (
-        <div className="flex min-h-screen flex-col bg-gray-100 text-gray-900">
-            <div className="p-4 sm:absolute sm:left-4 sm:top-4">
-                <img src={logo} alt="Azure logo" className="h-16 w-16" />
-            </div>
-            <main className="flex flex-grow flex-col items-center justify-center">
-                <h1 className="mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-7xl">
+        <div className="App relative min-h-screen w-full">
+            {/* Overlay content */}
+            <div className="absolute inset-0 flex flex-col items-center">
+                <h1 className="z-10 mt-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-7xl">
                     {t("app.title")}
                 </h1>
-                <div className="mb-4 flex flex-col items-center justify-center">
-                    <Button
-                        onClick={onToggleListening}
-                        className={`h-12 w-60 ${isRecording ? "bg-red-600 hover:bg-red-700" : "bg-purple-500 hover:bg-purple-600"}`}
-                        aria-label={isRecording ? t("app.stopRecording") : t("app.startRecording")}
-                    >
-                        {isRecording ? (
-                            <>
-                                <MicOff className="mr-2 h-4 w-4" />
-                                {t("app.stopConversation")}
-                            </>
-                        ) : (
-                            <>
-                                <Mic className="mr-2 h-6 w-6" />
-                            </>
-                        )}
-                    </Button>
+
+                <div className="flex-1"></div>
+
+                {/* Controls at the bottom */}
+                <div className="z-10 mb-20 flex flex-col items-center">
+                    <RecordingButton isRecording={isRecording} onToggleListening={onToggleListening} />
                     <StatusMessage isRecording={isRecording} />
                 </div>
-                <GroundingFiles files={groundingFiles} onSelected={setSelectedFile} />
+            </div>
+
+            <main className="h-screen w-full bg-black">
+                <AvatarCanvas animation={activeAnimation} />
             </main>
 
-            <footer className="py-4 text-center">
+            <footer className="absolute bottom-0 z-10 w-full py-4 text-center text-white">
                 <p>{t("app.footer")}</p>
             </footer>
-
-            <GroundingFileView groundingFile={selectedFile} onClosed={() => setSelectedFile(null)} />
         </div>
     );
 }

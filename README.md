@@ -1,9 +1,11 @@
-# VoiceRAG: An Application Pattern for RAG + Voice Using Azure AI Search and the GPT-4o Realtime API for Audio
+# VoiceRAG with 3D Avatar: Building a Voice-Driven Assistant Using Azure AI Search, GPT-4o Realtime API, and 3D Avatars
 
 [![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&skip_quickstart=true&machine=basicLinux32gb&repo=860141324&devcontainer_path=.devcontainer%2Fdevcontainer.json&geo=WestUs2)
 [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/aisearch-openai-rag-audio)
 
-This repo contains an example of how to implement RAG support in applications that use voice as their user interface, powered by the GPT-4o realtime API for audio. We describe the pattern in more detail in [this blog post](https://aka.ms/voicerag), and you can see this sample app in action in [this short video](https://youtu.be/vXJka8xZ9Ko).
+This repo contains an example of how to implement RAG support in applications that use voice as their user interface, powered by the GPT-4o realtime API for audio, and featuring an interactive 3D avatar assistant. This project is based on the upstream [VoiceRAG project](https://github.com/Azure-Samples/aisearch-openai-rag-audio) with added 3D avatar capabilities. We describe the pattern in more detail in [this blog post](https://aka.ms/voicerag), and you can see this sample app in action in [this short video](https://youtu.be/vXJka8xZ9Ko).
+
+![](./docs/avatar.png)
 
 * [Features](#features)
 * [Architecture Diagram](#architecture-diagram)
@@ -17,6 +19,7 @@ This repo contains an example of how to implement RAG support in applications th
 ## Features
 
 * **Voice interface**: The app uses the browser's microphone to capture voice input, and sends it to the backend where it is processed by the Azure OpenAI GPT-4o Realtime API.
+* **3D Avatar Assistant**: The app includes an expressive 3D avatar embodiement of the AI assistant, creating a more engaging and immersive user experience.
 * **RAG (Retrieval Augmented Generation)**: The app uses the Azure AI Search service to answer questions about a knowledge base, and sends the retrieved documents to the GPT-4o Realtime API to generate a response.
 * **Audio output**: The app plays the response from the GPT-4o Realtime API as audio, using the browser's audio capabilities.
 * **Citations**: The app shows the search results that were used to generate the response.

@@ -41,22 +41,7 @@ from azure.search.documents.indexes.models import (
 from azure.storage.blob import BlobServiceClient
 from dotenv import load_dotenv
 from rich.logging import RichHandler
-
-
-def load_azd_env():
-    """Get path to current azd env file and load file using python-dotenv"""
-    result = subprocess.run("azd env list -o json", shell=True, capture_output=True, text=True)
-    if result.returncode != 0:
-        raise Exception("Error loading azd env")
-    env_json = json.loads(result.stdout)
-    env_file_path = None
-    for entry in env_json:
-        if entry["IsDefault"]:
-            env_file_path = entry["DotEnvPath"]
-    if not env_file_path:
-        raise Exception("No default azd env file found")
-    logger.info(f"Loading azd env from {env_file_path}")
-    load_dotenv(env_file_path, override=True)
+from dotenv_azd import load_azd_env
 
 
 def setup_index(azure_credential, index_name, azure_search_endpoint, azure_storage_connection_string, azure_storage_container, azure_openai_embedding_endpoint, azure_openai_embedding_deployment, azure_openai_embedding_model, azure_openai_embeddings_dimensions):
@@ -197,7 +182,7 @@ def upload_documents(azure_credential, indexer_name, azure_search_endpoint, azur
     existing_blobs = [blob.name for blob in container_client.list_blobs()]
 
     # Open each file in /data folder
-    for file in os.scandir("data"):
+    for file in os.scandir("data/ameca"):
         with open(file.path, "rb") as opened_file:
             filename = os.path.basename(file.path)
             # Check if blob already exists

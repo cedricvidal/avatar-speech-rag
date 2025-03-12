@@ -1,3 +1,8 @@
+export type Tool = {
+    schema: any;
+    target: (input: any) => Promise<any>;
+};
+
 export type GroundingFile = {
     id: string;
     name: string;
@@ -19,6 +24,7 @@ export type SessionUpdateCommand = {
         input_audio_transcription?: {
             model: "whisper-1";
         };
+        tools?: Tool[];
     };
 };
 
@@ -53,12 +59,36 @@ export type ResponseInputAudioTranscriptionCompleted = {
     transcript: string;
 };
 
+export type ResponseAudioTranscriptionDone = {
+    type: "response.audio_transcript.done";
+    event_id: string;
+    item_id: string;
+    content_index: number;
+    transcript: string;
+};
+
 export type ResponseDone = {
     type: "response.done";
     event_id: string;
     response: {
         id: string;
         output: { id: string; content?: { transcript: string; type: string }[] }[];
+    };
+};
+
+export type ResponseOutputItemDone = {
+    type: "response.output_item.done";
+    event_id: string;
+    response_id: string;
+    output_index: number;
+    item: {
+        id: string;
+        object: string;
+        type: string;
+        status: string;
+        name: string;
+        call_id: string;
+        arguments: string;
     };
 };
 
@@ -71,4 +101,14 @@ export type ExtensionMiddleTierToolResponse = {
 
 export type ToolResult = {
     sources: { chunk_id: string; title: string; chunk: string }[];
+};
+
+// type for conversation.item.create
+export type ConversationItemCreate = {
+    type: "conversation.item.create";
+    item: {
+        type: string;
+        call_id: string;
+        output: string;
+    };
 };

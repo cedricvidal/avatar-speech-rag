@@ -9,7 +9,11 @@ import {
     ResponseDone,
     SessionUpdateCommand,
     ExtensionMiddleTierToolResponse,
-    ResponseInputAudioTranscriptionCompleted
+    ResponseInputAudioTranscriptionCompleted,
+    ResponseAudioTranscriptionDone,
+    ResponseOutputItemDone,
+    ConversationItemCreate,
+    Tool
 } from "@/types";
 
 type Parameters = {
@@ -30,7 +34,10 @@ type Parameters = {
     onReceivedExtensionMiddleTierToolResponse?: (message: ExtensionMiddleTierToolResponse) => void;
     onReceivedResponseAudioTranscriptDelta?: (message: ResponseAudioTranscriptDelta) => void;
     onReceivedInputAudioTranscriptionCompleted?: (message: ResponseInputAudioTranscriptionCompleted) => void;
+    onReceivedAudioTranscriptionDone?: (message: ResponseAudioTranscriptionDone) => void;
     onReceivedError?: (message: Message) => void;
+
+    tools?: Tool[];
 };
 
 export default function useRealTime({
@@ -49,7 +56,9 @@ export default function useRealTime({
     onReceivedInputAudioBufferSpeechStarted,
     onReceivedExtensionMiddleTierToolResponse,
     onReceivedInputAudioTranscriptionCompleted,
-    onReceivedError
+    onReceivedAudioTranscriptionDone,
+    onReceivedError,
+    tools
 }: Parameters) {
     const wsEndpoint = useDirectAoaiApi
         ? `${aoaiEndpointOverride}/openai/realtime?api-key=${aoaiApiKeyOverride}&deployment=${aoaiModelOverride}&api-version=2024-10-01-preview`
@@ -59,7 +68,7 @@ export default function useRealTime({
         onOpen: () => onWebSocketOpen?.(),
         onClose: () => onWebSocketClose?.(),
         onError: event => onWebSocketError?.(event),
-        onMessage: event => onMessageReceived(event),
+        onMessage: async event => await onMessageReceived(event),
         shouldReconnect: () => true
     });
 
@@ -69,7 +78,8 @@ export default function useRealTime({
             session: {
                 turn_detection: {
                     type: "server_vad"
-                }
+                },
+                tools: tools?.map(tool => tool.schema)
             }
         };
 
@@ -99,7 +109,7 @@ export default function useRealTime({
         sendJsonMessage(command);
     };
 
-    const onMessageReceived = (event: MessageEvent<any>) => {
+    const onMessageReceived = async (event: MessageEvent<any>) => {
         onWebSocketMessage?.(event);
 
         let message: Message;
@@ -126,11 +136,40 @@ export default function useRealTime({
             case "conversation.item.input_audio_transcription.completed":
                 onReceivedInputAudioTranscriptionCompleted?.(message as ResponseInputAudioTranscriptionCompleted);
                 break;
+            case "response.audio_transcript.done":
+                onReceivedAudioTranscriptionDone?.(message as ResponseInputAudioTranscriptionCompleted);
+                break;
             case "extension.middle_tier_tool_response":
                 onReceivedExtensionMiddleTierToolResponse?.(message as ExtensionMiddleTierToolResponse);
                 break;
+            case "response.output_item.done":
+                const { event_id, item } = message as ResponseOutputItemDone;
+                // If message type is function_call then call the tool and send it back to the server
+                if (item.type === "function_call") {
+                    const tool = tools?.find(tool => tool.schema.name === item.name);
+                    if (tool) {
+                        console.log("Tool found", { tool });
+                        const args = JSON.parse(item.arguments);
+                        const result = await tool.target(args);
+                        const command: ConversationItemCreate = {
+                            type: "conversation.item.create",
+                            item: {
+                                type: "function_call_output",
+                                call_id: item.call_id,
+                                output: JSON.stringify(result)
+                            }
+                        };
+                        console.log("Tool result", { reply: command });
+                        sendJsonMessage(command);
+                    }
+                }
+                console.log("Output item done", { event_id, item });
+                break;
             case "error":
                 onReceivedError?.(message);
+                break;
+            default:
+                console.warn("Unknown message type:", message);
                 break;
         }
     };

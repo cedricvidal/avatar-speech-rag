@@ -151,4 +151,7 @@ static/
 
 data/**/*.md5
 
-.DS_Store
+.DS_Storework/
+work/
+.azr_msal.bin
+ai-requirements.yaml
