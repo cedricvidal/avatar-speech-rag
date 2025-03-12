@@ -25,7 +25,7 @@ export function moveTool(handler: (animation: string) => void): Tool {
         console.log("Animation tool called", animation);
         handler(animation);
         return {
-            result: "Here was my " + animation + " move, what do you think about it?"
+            result: "Body feedback: move " + animation + " started"
         };
     });
 }
