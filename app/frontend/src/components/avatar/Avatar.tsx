@@ -26,7 +26,7 @@ const Avatar = ({ animation, onToggleListening, isListening }: Props) => {
             actions[animation]?.reset().fadeIn(0.5).setLoop(LoopOnce, 1).play();
         }
         console.log("idle animation");
-        actions["idle"]?.reset().fadeIn(0.5).setLoop(LoopRepeat, 10).play();
+        actions["idle"]?.reset().fadeIn(0.5).setLoop(LoopRepeat, 100).play();
 
         return () => {
             if (animation) {
