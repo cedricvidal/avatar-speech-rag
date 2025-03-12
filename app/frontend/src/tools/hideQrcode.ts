@@ -3,8 +3,8 @@ import { Tool } from "@/types";
 
 const schema = {
     type: "function",
-    name: "show_qrcode",
-    description: "Show the project's URL QR code to the user. This function allows to show a QR code to the user.",
+    name: "hide_qrcode",
+    description: "Hide the project URL's QR code",
     parameters: {
         type: "object",
         properties: {},
@@ -12,12 +12,12 @@ const schema = {
     }
 };
 
-export function showQrCode(handler: () => void): Tool {
+export function hideQrCode(handler: () => void): Tool {
     return makeTool(schema, async () => {
-        console.log("Show qrcode");
+        console.log("Hide qrcode");
         handler();
         return {
-            feedback: "QR Code shown"
+            feedback: "QR Code hidden"
         };
     });
 }

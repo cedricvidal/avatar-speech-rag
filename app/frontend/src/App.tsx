@@ -15,6 +15,7 @@ import { stopAnimate } from "./tools/stopAnimate";
 import StatusMessage from "@/components/ui/status-message";
 import RecordingButton from "@/components/ui/recording-button";
 import { showQrCode } from "./tools/showQrcode";
+import { hideQrCode } from "./tools/hideQrcode";
 
 function App() {
     const [isRecording, setIsRecording] = useState(false);
@@ -58,6 +59,10 @@ function App() {
             showQrCode(() => {
                 console.log("Show QR code");
                 setShowQrCodeOverlay(true);
+            }),
+            hideQrCode(() => {
+                console.log("Hide QR code");
+                setShowQrCodeOverlay(false);
             })
         ]
     });
@@ -118,8 +123,8 @@ function App() {
 
             {/* QR Code overlay */}
             {showQrCodeOverlay && (
-                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black bg-opacity-70" onClick={() => setShowQrCodeOverlay(false)}>
-                    <div className="rounded-lg bg-white p-6">
+                <div className="absolute inset-0 z-20 flex items-end justify-end bg-black bg-opacity-70" onClick={() => setShowQrCodeOverlay(false)}>
+                    <div className="m-8 rounded-lg bg-white p-6">
                         <img src="github-qrcode.png" alt="GitHub QR Code" className="h-64 w-64" />
                         <p className="mt-2 text-center text-sm text-gray-600">Tap anywhere to dismiss</p>
                     </div>
