@@ -1,7 +1,7 @@
 {
     "app": {
         "title": "Real-time AI avatar demo",
-        "footer": "Built with Azure AI Search + Azure OpenAI + Three.js",
+        "footer": "Built with Azure AI Search + Azure OpenAI Realtime Speech API + Three.js",
         "stopRecording": "Stop recording",
         "startRecording": "Start recording",
         "stopConversation": "Stop conversation"
