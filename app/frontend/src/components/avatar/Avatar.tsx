@@ -34,7 +34,7 @@ const Avatar = ({ animation }: Props) => {
 
     return (
         <group>
-            <primitive object={scene} scale={2} position-y={-2} rotation-y={-0.5} position-x={[-1]} />
+            <primitive object={scene} scale={2.5} position-y={-2} rotation-y={0.5} position-x={[0]} />
         </group>
     );
 };
