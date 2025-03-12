@@ -8,7 +8,7 @@ type Properties = {
 export default function StatusMessage({ isRecording }: Properties) {
     const { t } = useTranslation();
     if (!isRecording) {
-        return <p className="text mb-4 mt-6">{t("status.notRecordingMessage")}</p>;
+        return <p className="text mb-4 mt-6 text-white">{t("status.notRecordingMessage")}</p>;
     }
 
     return (
@@ -27,7 +27,7 @@ export default function StatusMessage({ isRecording }: Properties) {
                     ))}
                 </div>
             </div>
-            <p className="text mb-4 ml-2 mt-6">{t("status.conversationInProgress")}</p>
+            <p className="text mb-4 ml-2 mt-6 text-white">{t("status.conversationInProgress")}</p>
         </div>
     );
 }

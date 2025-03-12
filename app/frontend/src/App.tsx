@@ -78,17 +78,27 @@ function App() {
     const { t } = useTranslation();
 
     return (
-        <div className="App">
-            <h1 className="mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-7xl">{t("app.title")}</h1>
+        <div className="App relative min-h-screen w-full">
+            {/* Overlay content */}
+            <div className="absolute inset-0 flex flex-col items-center">
+                <h1 className="z-10 mt-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-7xl">
+                    {t("app.title")}
+                </h1>
+
+                <div className="flex-1"></div>
+
+                {/* Controls at the bottom */}
+                <div className="z-10 mb-20 flex flex-col items-center">
+                    <RecordingButton isRecording={isRecording} onToggleListening={onToggleListening} />
+                    <StatusMessage isRecording={isRecording} />
+                </div>
+            </div>
+
             <main className="h-screen w-full bg-black">
                 <AvatarCanvas animation={activeAnimation} />
             </main>
-            <div>
-                <RecordingButton isRecording={isRecording} onToggleListening={onToggleListening} />
-                <StatusMessage isRecording={isRecording} />
-            </div>
 
-            <footer className="py-4 text-center text-white">
+            <footer className="absolute bottom-0 z-10 w-full py-4 text-center text-white">
                 <p>{t("app.footer")}</p>
             </footer>
         </div>
