@@ -19,7 +19,7 @@ function App() {
     const [isRecording, setIsRecording] = useState(false);
     const [activeAnimation, setActiveAnimation] = useState<string | undefined>(undefined);
 
-    const { startSession, addUserAudio, inputAudioBufferClear } = useRealTime({
+    const { startSession, addUserAudio, inputAudioBufferClear, sendJsonMessage } = useRealTime({
         onWebSocketOpen: () => console.log("WebSocket connection opened"),
         onWebSocketClose: () => console.log("WebSocket connection closed"),
         onWebSocketError: event => console.error("WebSocket error:", event),
@@ -75,6 +75,22 @@ function App() {
         }
     };
 
+    const onAnimationComplete = (animation: string) => {
+        console.log("Animation completed", animation);
+        //sendJsonMessage({
+        //    type: "conversation.item.create",
+        //    item: {
+        //        type: "message",
+        //        content: [
+        //            {
+        //                type: "text",
+        //                content: "Animation completed: " + animation
+        //            }
+        //        ]
+        //    }
+        //});
+    };
+
     const { t } = useTranslation();
 
     return (
@@ -95,7 +111,7 @@ function App() {
             </div>
 
             <main className="h-screen w-full bg-black">
-                <AvatarCanvas animation={activeAnimation} />
+                <AvatarCanvas animation={activeAnimation} onAnimationComplete={onAnimationComplete} />
             </main>
 
             <footer className="absolute bottom-0 z-10 w-full py-4 text-center text-white">

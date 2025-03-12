@@ -3,16 +3,16 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { act, Suspense, useEffect, useRef, useState } from "react";
 import { MyLoader } from "./MyLoader";
 import myavatar_url from "@/assets/cedric-yellow-pullover-animated.glb";
-import { useTranslation } from "react-i18next";
 import { LoopOnce, LoopRepeat } from "three";
 import { easing } from "maath";
 
 type Props = {
     animation?: string;
     focusOnHead?: boolean;
+    onAnimationComplete?: (name: string) => void;
 };
 
-const Avatar = ({ animation }: Props) => {
+const Avatar = ({ animation, onAnimationComplete }: Props) => {
     const { scene, animations } = useGLTF(myavatar_url);
     const { actions, names, mixer } = useAnimations(animations, scene);
     const avatarMesh = useRef();
@@ -39,6 +39,7 @@ const Avatar = ({ animation }: Props) => {
             if (animation && e.action.getClip().name === animation) {
                 console.log("finished");
                 setIsAnimating(false);
+                onAnimationComplete?.(animation);
             }
         };
 

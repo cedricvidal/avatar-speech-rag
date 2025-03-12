@@ -174,5 +174,5 @@ export default function useRealTime({
         }
     };
 
-    return { startSession, addUserAudio, inputAudioBufferClear };
+    return { startSession, addUserAudio, inputAudioBufferClear, sendJsonMessage };
 }
