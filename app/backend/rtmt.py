@@ -44,6 +44,16 @@ class RTToolCall:
         self.tool_call_id = tool_call_id
         self.previous_id = previous_id
 
+class VoiceChoice(Enum):
+  ALLOY = "alloy"
+  ASH = "ash"
+  BALLAD = "ballad"
+  CORAL = "coral"
+  ECHO = "echo"
+  SAGE = "sage"
+  SHIMMER = "shimmer"
+  VERSE = "verse"
+
 class RTMiddleTier:
     endpoint: str
     deployment: str

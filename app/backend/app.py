@@ -8,7 +8,7 @@ from azure.identity import AzureDeveloperCliCredential, DefaultAzureCredential
 from dotenv import load_dotenv
 
 from ragtools import attach_rag_tools
-from rtmt import RTMiddleTier
+from rtmt import RTMiddleTier, VoiceChoice
 
 from rich.logging import RichHandler
 
@@ -44,7 +44,7 @@ async def create_app():
         credentials=llm_credential,
         endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
         deployment=os.environ["AZURE_OPENAI_REALTIME_DEPLOYMENT"],
-        voice_choice=os.environ.get("AZURE_OPENAI_REALTIME_VOICE_CHOICE") or "alloy"
+        voice_choice=os.environ.get("AZURE_OPENAI_REALTIME_VOICE_CHOICE") or VoiceChoice.ALLOY
         )
     rtmt.system_message = """
         You are an AI named Contoso.
