@@ -8,6 +8,7 @@ import { LoopOnce, LoopRepeat } from "three";
 
 type Props = {
     animation?: string;
+    focusOnHead?: boolean;
 };
 
 const Avatar = ({ animation }: Props) => {
@@ -32,9 +33,14 @@ const Avatar = ({ animation }: Props) => {
         };
     }, [actions, names, animation]);
 
+    const focusOnHead = !animation;
+    // Adjust position and scale based on focus area
+    const scale = focusOnHead ? 8 : 2.5;
+    const positionY = focusOnHead ? -12 : -2;
+
     return (
         <group>
-            <primitive object={scene} scale={2.5} position-y={-2} rotation-y={0.5} position-x={[0]} />
+            <primitive object={scene} scale={scale} position-y={positionY} rotation-y={0.5} position-x={[0]} />
         </group>
     );
 };
@@ -45,7 +51,7 @@ export const AvatarCanvas = (props: Props) => {
             <SpotLight position={[0, 3, 3]} angle={0.5} opacity={0.5} />
             <ambientLight intensity={0.5} />
             <pointLight position={[1, 1, 1]} />
-            <OrbitControls enabled={true} />
+            <OrbitControls enabled={true} target={[0, props.focusOnHead ? 1 : 0, 0]} />
             <Suspense fallback={<MyLoader />}>
                 <Avatar {...props} />
             </Suspense>
