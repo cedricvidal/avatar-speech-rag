@@ -7,6 +7,7 @@ from azure.search.documents.aio import SearchClient
 from azure.search.documents.models import VectorizableTextQuery
 
 from rtmt import RTMiddleTier, Tool, ToolResult, ToolResultDirection
+from tools.memory import memory_tools
 
 _search_tool_schema = {
     "type": "function",
@@ -116,3 +117,6 @@ def attach_rag_tools(rtmt: RTMiddleTier,
 
     rtmt.tools["search"] = Tool(schema=_search_tool_schema, target=lambda args: _search_tool(search_client, semantic_configuration, identifier_field, content_field, embedding_field, use_vector_query, args))
     rtmt.tools["report_grounding"] = Tool(schema=_grounding_tool_schema, target=lambda args: _report_grounding_tool(search_client, identifier_field, title_field, content_field, args))
+
+    for name, tool in memory_tools().items():
+        rtmt.tools[name] = tool
