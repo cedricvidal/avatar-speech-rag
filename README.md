@@ -142,9 +142,6 @@ You can run this app locally using either the Azure services you provisioned by 
 
 4. The app is available on [http://localhost:8765](http://localhost:8765).
 
-   Once the app is running, when you navigate to the URL above you should see the start screen of the app:
-   ![app screenshot](docs/talktoyourdataapp.png)
-
    To try out the app, click the "Start conversation button", say "Hello", and then ask a question about your data like "What is the whistleblower policy for Contoso electronics?"
 
 ## Guidance
