@@ -28,7 +28,7 @@ This repo contains an example of how to implement RAG support in applications th
 
 The `RTClient` in the frontend receives the audio input, sends that to the Python backend which uses an `RTMiddleTier` object to interface with the Azure OpenAI real-time API, and includes a tool for searching Azure AI Search.
 
-![Diagram of real-time RAG pattern](docs/RTMTPattern.png)
+![Diagram of real-time RAG pattern](docs/arch.png)
 
 This repository includes infrastructure as code and a `Dockerfile` to deploy the app to Azure Container Apps, but it can also be run locally as long as Azure AI Search and Azure OpenAI services are configured.
 
