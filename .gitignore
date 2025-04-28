@@ -155,3 +155,4 @@ data/**/*.md5
 work/
 .azr_msal.bin
 ai-requirements.yaml
+.DS_Store
